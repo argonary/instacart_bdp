@@ -1,0 +1,30 @@
+# dbt artifacts
+target/
+dbt_packages/
+logs/
+
+# DuckDB / local data
+dev.duckdb
+*.duckdb
+*.db
+
+# Python / venv
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Secrets (never commit keys)
+*.key.json
+*.secret.json
+*.credentials.json
+dbt-sa-key.json
+
+# Large raw data
+seeds/*.csv
+seeds/*.tsv
+

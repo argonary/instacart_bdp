@@ -1,0 +1,11 @@
+version: 2
+sources:
+  - name: instacart
+    schema: main_raw
+    tables:
+      - name: aisles
+      - name: departments
+      - name: orders
+      - name: order_products__priors
+      - name: order_products__train
+      - name: products

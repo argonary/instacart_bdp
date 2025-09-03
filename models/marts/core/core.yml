@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: dim_product
+    description: "One row per product with aisle/departments."
+    columns:
+      - name: product_id
+        tests: [not_null, unique]
+      - name: product_name
+      - name: aisle
+      - name: department
+  
+  - name: fact_order_item
+    description: "Line-level items with order/user/time features."
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: product_id
+        tests: 
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_product')
+                field: product_id
+      - name: reordered
+        tests: 
+          - accepted_values:
+              arguments:
+                values: [0,1]
