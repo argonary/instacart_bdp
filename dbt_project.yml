@@ -32,8 +32,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   instacart:
     # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
     staging:
       +materialized: view
       +schema: staging
@@ -42,7 +40,23 @@ models:
       +schema: marts
 
 seeds:
+  +schema: raw
   instacart:
     +quote_columns: false
-    +schema: raw
+    scenarios:
+      +schema: marts
+      +column_types:
+        scenario_id: int64
+        scenario_label: string
+        service_buffer: float64
+        shortage_penalty: float64
+        holding_cost: float64
 
+vars:
+  bqml_training_mode: "multi"            # or "per_sku"
+  bqml_timeseries_model: "product_demand_arima"
+  bqml_model_prefix: "bqml_arima__"      # only used if bqml_training_mode = "per_sku"
+  exp_service_buffer: 1.30
+  exp_shortage_penalty: 10
+  exp_holding_cost: 1
+  exp_confidence_level: 0.80

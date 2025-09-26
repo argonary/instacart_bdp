@@ -1,11 +1,12 @@
 version: 2
 sources:
   - name: instacart
-    schema: main_raw
+    database: instacart-470921      # GCP project
+    schema: raw_instacart           # BigQuery dataset
     tables:
+      - name: orders
+      - name: products
       - name: aisles
       - name: departments
-      - name: orders
-      - name: order_products__priors
+      - name: order_products__prior
       - name: order_products__train
-      - name: products

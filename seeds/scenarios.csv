@@ -1,0 +1,6 @@
+scenario_id,scenario_label,service_buffer,shortage_penalty,holding_cost
+0,Baseline (forecast mean),1.00,10,1
+1,Forecast x1.20,1.20,5,1
+2,Forecast x1.40,1.40,5,1
+3,Forecast x0.90,0.90,10,1
+4,Forecast x1.60,1.60,10,1

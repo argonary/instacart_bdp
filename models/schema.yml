@@ -1,0 +1,62 @@
+version: 2
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+
+  - name: fct_order_lines
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+      - name: product_id
+        tests:
+          - not_null
+      - name: reordered
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+
+  - name: product_demand_forecast_enriched
+    columns:
+      - name: forecast_value
+        tests: [not_null]
+      - name: product_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_product')
+                field: product_id
+
+  - name: inventory_suggestions
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [product_id, week_start]
+    columns:
+      - name: target_stock
+        tests: [not_null]
+
+  - name: product_restock_plan
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments: { combination_of_columns: [plan_generated_on, product_id] }
+    columns:
+      - name: order_qty_next_week
+        tests: [not_null]
+
+  - name: exp_high_volume
+    description: High-demand SKUs (>1000 units) with fill/cost deltas under current knobs.
+  - name: exp_volatile_skus
+    description: Volatile SKUs by coefficient of variation; where buffer may matter.
+  - name: exp_by_department
+    description: Segment-level deltas (department_id is NULL until attrs are added).
+  - name: exp_sweep_rollup
+    description: Weekly deltas for a set of buffer scenarios to visualize tradeoffs.
+  - name: exp_demand_weighted_fill
+    description: Demand-weighted fill delta (pp) for stability vs unweighted AVG.

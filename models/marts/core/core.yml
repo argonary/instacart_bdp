@@ -27,3 +27,27 @@ models:
           - accepted_values:
               arguments:
                 values: [0,1]
+                quote: False
+
+  - name: dim_user
+    description: "User-level aggregate features for analysis and modeling."
+    columns:
+      - name: user_id
+        tests: [not_null, unique]
+      - name: order_count
+      - name: avg_days_between_orders
+      - name: avg_basket_size
+      - name: distinct_products_lifetime
+      - name: reorder_rate_lifetime
+
+  - name: product_reorder_summary
+    columns:
+      - name: product_id
+        tests: [not_null, unique]
+      - name: reorder_rate
+      
+  - name: user_order_summary
+    columns:
+      - name: user_id
+        tests: [not_null, unique]
+      - name: reorder_rate

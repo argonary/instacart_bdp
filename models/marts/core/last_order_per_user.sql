@@ -1,15 +1,22 @@
-with ranked as (
-  select
-    user_id,
-    order_id,
-    order_number,
-    row_number() over (
-      partition by user_id
-      order by order_number desc, order_id desc
-    ) as rn
+{{ config(materialized='table') }}
+
+with orders as (
+  select user_id, order_id, order_number, order_dow, order_hour_of_day, days_since_prior_order, eval_set
   from {{ ref('stg_orders') }}
-  where order_number is not null
+),
+ranked as (
+  select
+    orders.*,
+    row_number() over (partition by user_id order by order_number desc, order_id desc) as rn
+  from orders
 )
-select user_id, order_id as holdout_order_id
+select
+  user_id,
+  order_id,
+  order_number,
+  order_dow,
+  order_hour_of_day,
+  days_since_prior_order,
+  eval_set
 from ranked
-where rn = 1;
+where rn = 1

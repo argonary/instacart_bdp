@@ -1,0 +1,30 @@
+{{ config(materialized='table') }}
+
+WITH eligible AS (
+  SELECT
+    o.department_id,
+    o.department_name,
+    o.week,                          -- cast to DATE if needed
+    o.baseline_revenue_usd AS gmv_usd
+  FROM {{ ref('exp_opportunities') }} o
+),
+last_52w AS (
+  SELECT *
+  FROM eligible
+  WHERE week >= DATE_SUB(CURRENT_DATE(), INTERVAL 52 WEEK)
+)
+
+SELECT
+  department_id,
+  department_name,
+  SUM(gmv_usd) AS gmv_52w_usd
+FROM last_52w
+GROUP BY 1,2
+
+UNION ALL
+
+SELECT
+  CAST(NULL AS INT64) AS department_id,
+  'ALL_DEPARTMENTS'   AS department_name,
+  SUM(gmv_usd)        AS gmv_52w_usd
+FROM last_52w
